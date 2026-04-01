@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Mohamed's Escape Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel:wght@700;900&family=Outfit:wght@400;500;600;700;800&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--sf:#141414;--bd:#252525;--tx:#e8e8e8;--dm:#666;--gd:#d4a030;--gg:rgba(212,160,48,.2);--rd:#cc3333;--gn:#33aa55;--bl:#3366cc;--r:10px}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh}
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:20px}.screen.active{display:flex}
+#menu{background:radial-gradient(ellipse at 50% 30%,#1a1408,var(--bg) 70%)}
+.mt{font-family:'Creepster',cursive;font-size:3.2rem;color:var(--gd);text-shadow:0 0 40px var(--gg),0 4px 0 #1a1408;text-align:center;margin-bottom:4px;letter-spacing:2px}
+.ms{color:var(--dm);text-align:center;margin-bottom:36px;font-family:'Special Elite',monospace}
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;max-width:900px;width:100%}
+.rc{background:var(--sf);border:1px solid var(--bd);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s}.rc:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.4);border-color:var(--gd)}
+.rcb{height:150px;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.rcb.egypt{background:linear-gradient(135deg,#2a1a08,#3d2a10,#1a1205)}.rcb.murder{background:linear-gradient(135deg,#1a0808,#2a1010,#0a0505)}.rcb.decl{background:linear-gradient(135deg,#08121a,#102030,#050a10)}
+.rci{padding:16px}.rcn{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:900;color:var(--gd);margin-bottom:3px}.rcd{font-size:.8rem;color:var(--dm);line-height:1.4}
+.sc{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:24px;max-width:440px;width:100%}.sc h2{font-family:'Cinzel',serif;color:var(--gd);font-size:1.4rem;margin-bottom:14px;text-align:center}
+.mbtn{display:flex;gap:8px;margin:12px 0}.mbt{flex:1;padding:12px;border:2px solid var(--bd);border-radius:var(--r);background:var(--bg);cursor:pointer;text-align:center;font-family:'Outfit',sans-serif;color:var(--tx);font-weight:600;font-size:.85rem}.mbt:hover{border-color:var(--dm)}.mbt.s{border-color:var(--gd);color:var(--gd)}.mbt .mi{font-size:1.3rem;display:block;margin-bottom:3px}
+.dbtn{display:flex;gap:8px;margin:12px 0}.dbt{flex:1;padding:8px;border:2px solid var(--bd);border-radius:var(--r);background:var(--bg);cursor:pointer;text-align:center;font-weight:700;font-size:.82rem;font-family:'Outfit',sans-serif;color:var(--tx)}.dbt:hover{border-color:var(--dm)}.dbt.s.e{border-color:var(--gn);color:var(--gn)}.dbt.s.m{border-color:var(--gd);color:var(--gd)}.dbt.s.h{border-color:var(--rd);color:var(--rd)}
+.fg{margin-bottom:12px}.fg label{display:block;font-size:.68rem;color:var(--dm);margin-bottom:3px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}.fg input{width:100%;padding:9px 12px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none}.fg input:focus{border-color:var(--gd)}
+.b{padding:9px 20px;border:none;border-radius:var(--r);font-family:'Outfit',sans-serif;font-weight:700;font-size:.84rem;cursor:pointer;transition:all .15s}.bg{background:var(--gd);color:#0a0a0a}.bg:hover{box-shadow:0 0 16px var(--gg)}.bd{background:var(--bd);color:var(--tx)}.bd:hover{background:#333}.bk{width:100%}.bs{padding:6px 12px;font-size:.78rem}
+.dv{text-align:center;color:var(--dm);margin:14px 0;font-size:.8rem;position:relative}.dv::before,.dv::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:var(--bd)}.dv::before{left:0}.dv::after{right:0}
+.rmc{font-family:'Special Elite',monospace;font-size:2rem;color:var(--gd);letter-spacing:6px;margin:8px 0;padding:8px;background:var(--bg);border-radius:var(--r);border:1px dashed var(--gd);text-align:center}
+.pl{list-style:none;margin:10px 0}.pl li{padding:7px 10px;background:var(--bg);border-radius:var(--r);margin-bottom:4px;font-weight:600;font-size:.83rem;display:flex;align-items:center;gap:6px}.pdt{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.pso{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.psb{padding:7px 14px;border:2px solid var(--bd);border-radius:var(--r);cursor:pointer;font-weight:700;font-size:.83rem;background:var(--bg);color:var(--tx)}.psb:hover{border-color:var(--dm)}.psb.s{border-color:var(--gd);color:var(--gd)}
+#gs{padding:0;align-items:stretch;min-height:100vh}
+.gt{padding:10px 16px;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.gti{font-family:'Cinzel',serif;color:var(--gd);font-size:.95rem;margin-right:auto}.gtm{font-family:'Special Elite',monospace;font-size:1.5rem;color:var(--gd);min-width:60px;text-align:center}.gtm.u{color:var(--rd);animation:pu 1s infinite}@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+.gc{font-size:.78rem;color:var(--dm)}.gpr{font-size:.78rem;color:var(--gn)}
+.gb{flex:1;max-width:760px;margin:0 auto;padding:20px;width:100%;min-height:calc(100vh - 50px)}
+.gb.egypt-t{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23332208' stroke-width='.5'/%3E%3C/svg%3E"),linear-gradient(180deg,#1a1205,#2a1a08,#1a1205)}
+.gb.murder-t{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='none'/%3E%3Cpath d='M0 20h40M20 0v40' stroke='%23200808' stroke-width='.3'/%3E%3C/svg%3E"),linear-gradient(180deg,#0a0505,#1a0808,#0a0505)}
+.gb.decl-t{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Ccircle cx='25' cy='25' r='20' fill='none' stroke='%23102030' stroke-width='.3'/%3E%3C/svg%3E"),linear-gradient(180deg,#050a10,#0a1520,#050a10)}
+.pc{background:rgba(20,20,20,.93);border:1px solid var(--bd);border-radius:14px;padding:22px;margin-bottom:14px;backdrop-filter:blur(4px)}.pc h3{font-family:'Cinzel',serif;color:var(--gd);font-size:1.1rem;margin-bottom:10px}.ps{color:var(--dm);font-size:.85rem;line-height:1.6;margin-bottom:14px;font-family:'Special Elite',monospace}
+.pv{background:rgba(10,10,10,.8);border:1px solid var(--bd);border-radius:10px;padding:18px;margin:14px 0;text-align:center}.pv .code{font-family:'Special Elite',monospace;font-size:1.3rem;color:var(--gd);letter-spacing:3px;margin:6px 0}.pv .vt{color:var(--dm);font-size:.82rem;margin-top:4px}
+.pi{display:flex;gap:8px;margin-top:12px}.pi input{flex:1;padding:10px 14px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);color:var(--tx);font-family:'Special Elite',monospace;font-size:1rem;outline:none;text-transform:uppercase;letter-spacing:2px}.pi input:focus{border-color:var(--gd)}
+.ph{margin-top:8px;padding:10px 12px;background:rgba(212,160,48,.06);border:1px solid rgba(212,160,48,.15);border-radius:var(--r);color:var(--gd);font-size:.8rem;display:none}.ph.sh{display:block}
+.pf{margin-top:6px;font-weight:700;font-size:.85rem;min-height:20px}.pf.c{color:var(--gn)}.pf.w{color:var(--rd)}
+.ch{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}.cb{padding:10px;border:2px solid var(--bd);border-radius:var(--r);background:var(--bg);cursor:pointer;font-weight:600;font-size:.83rem;text-align:center;color:var(--tx);font-family:'Outfit',sans-serif}.cb:hover{border-color:var(--gd);color:var(--gd)}
+.res{background:rgba(20,20,20,.95);border:2px solid var(--bd);border-radius:14px;padding:32px;text-align:center;max-width:480px;margin:30px auto}.res.w{border-color:var(--gn);box-shadow:0 0 30px rgba(51,170,85,.1)}.res.l{border-color:var(--rd);box-shadow:0 0 30px rgba(204,51,51,.1)}.res h2{font-family:'Creepster',cursive;font-size:2.3rem;margin-bottom:6px}.res.w h2{color:var(--gn)}.res.l h2{color:var(--rd)}
+.cht{background:rgba(20,20,20,.9);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:14px}.cht h4{font-size:.7rem;color:var(--dm);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}.cms{max-height:120px;overflow-y:auto;margin-bottom:6px;font-size:.8rem;color:var(--dm)}.cms div{padding:2px 0;border-bottom:1px solid rgba(255,255,255,.02)}.cms strong{color:var(--tx)}.cr{display:flex;gap:5px}.cr input{flex:1;padding:6px 9px;border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.83rem;outline:none}
+.tbx{position:fixed;top:14px;right:14px;z-index:200;display:flex;flex-direction:column;gap:5px}.to{padding:9px 14px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);font-size:.8rem;animation:si .3s;font-weight:600;max-width:260px}@keyframes si{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:600px){.mt{font-size:2rem}.mg{grid-template-columns:1fr}.ch{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="menu" class="screen active">
+<div class="mt">Mr. Mohamed's<br>Escape Games</div>
+<div class="ms">Can you escape in time?</div>
+<div class="mg">
+<div class="rc" onclick="selRoom('egypt')"><div class="rcb egypt">🏛️</div><div class="rci"><div class="rcn">The Pharaoh's Tomb</div><div class="rcd">Trapped in an ancient tomb. Solve logic puzzles carved into the walls to escape before it seals forever.</div></div></div>
+<div class="rc" onclick="selRoom('murder')"><div class="rcb murder">🔍</div><div class="rci"><div class="rcn">The Murder Mystery</div><div class="rcd">A man is dead in his study. Examine clues, crack codes, and piece together what happened.</div></div></div>
+<div class="rc" onclick="selRoom('decl')"><div class="rcb decl">📜</div><div class="rci"><div class="rcn">The Hidden Declaration</div><div class="rcd">A priceless document is hidden in a locked room. Search, decode, and discover the secret.</div></div></div>
+</div></div>
+
+<div id="setup" class="screen">
+<div class="sc"><h2 id="sT">Setup</h2>
+<div class="fg"><label>Mode</label><div class="mbtn"><div class="mbt s" onclick="sMode('solo',this)"><span class="mi">🧑</span>Solo</div><div class="mbt" onclick="sMode('multi',this)"><span class="mi">👥</span>Multi</div></div></div>
+<div class="fg"><label>Difficulty</label><div class="dbtn"><div class="dbt s e" onclick="sDiff('easy',this)">Easy<br><span style="font-size:.68rem;font-weight:400">3 clues · 5 puzzles · 15 min</span></div><div class="dbt m" onclick="sDiff('medium',this)">Medium<br><span style="font-size:.68rem;font-weight:400">2 clues · 10 puzzles · 25 min</span></div><div class="dbt h" onclick="sDiff('hard',this)">Hard<br><span style="font-size:.68rem;font-weight:400">1 clue · 15 puzzles · 35 min</span></div></div></div>
+<div id="soloO"><div class="fg"><label>Your Name</label><input id="sN" placeholder="Enter name" maxlength="16"></div><button class="b bg bk" onclick="startSolo()">Start Escape 🔓</button></div>
+<div id="multiO" style="display:none"><div class="fg"><label>Your Name</label><input id="mN" placeholder="Enter name" maxlength="16"></div><div class="fg"><label>Max Players</label><div class="pso" id="pSel"></div></div><button class="b bg bk" onclick="createM()">Create Room</button><div class="dv">or join</div><div class="fg"><label>Room Code</label><input id="mC" placeholder="Code" maxlength="5" style="text-transform:uppercase"></div><button class="b bd bk" onclick="joinM()">Join Room</button></div>
+<button class="b bd bs bk" onclick="sh('menu')" style="margin-top:10px">← Back</button></div></div>
+
+<div id="wait" class="screen"><div class="sc" style="text-align:center"><h2 id="wT">Waiting</h2><div class="rmc" id="wC">-----</div><ul class="pl" id="wP"></ul><p style="color:var(--dm);font-size:.8rem;margin-bottom:10px" id="wS">Waiting...</p><button class="b bg bk" id="wB" onclick="startMG()" style="display:none">Start Game</button><button class="b bd bs" onclick="leaveM()" style="margin-top:8px">Leave</button></div></div>
+
+<div id="gs" class="screen" style="align-items:stretch;justify-content:flex-start">
+<div class="gt"><div class="gti" id="gTi">Escape</div><div class="gpr" id="gPr">0/0</div><div class="gc" id="gCl">💡 3</div><div class="gtm" id="gTm">30:00</div><button class="b bs bd" id="cBtn" onclick="useClue()">💡 Clue</button></div>
+<div class="gb" id="gB"></div></div>
+
+<div class="tbx" id="tbx"></div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyASPNSXdFs2B3X8mbUq-nBYlgAIR7BSx6E",authDomain:"fortuna-64c00.firebaseapp.com",databaseURL:"https://fortuna-64c00-default-rtdb.firebaseio.com",projectId:"fortuna-64c00",storageBucket:"fortuna-64c00.firebasestorage.app",messagingSenderId:"329218105683",appId:"1:329218105683:web:6b16fd2b1091531e4481a6"});
+const db=firebase.database(),RT='escape3';
+const TIMES={easy:900000,medium:1500000,hard:2100000};
+const CLUES={easy:3,medium:2,hard:1};
+
+// ═══ 90 PUZZLES — ALL LOGIC, NO TRIVIA ═══
+const P={egypt:{easy:[
+{t:'t',n:'The Door Code',s:'The tomb entrance has a 3-digit lock. A carving shows: "The number between 4 and 6, repeated three times."',a:'555',h:'What number is between 4 and 6?'},
+{t:'t',n:'The Stone Sequence',s:'Stones show: 2, 4, 8, 16, ___. Each number doubles.',a:'32',h:'16 × 2 = ?'},
+{t:'c',n:'The Two Doors',s:'Door A has 6 scratches (even). Door B has 7 (odd). The safe door ALWAYS has an odd number of marks.',a:'B',c:['Door A (6)','Door B (7)'],h:'Odd = not divisible by 2.'},
+{t:'t',n:'The Mirror Message',s:'A mirror reflects text. You see: "NEPO". What does it say when read correctly?',a:'OPEN',h:'Read the letters in reverse.'},
+{t:'t',n:'The Balance',s:'A scale needs balance. Left side: 15. Right side: 7 + ___.',a:'8',h:'15 - 7 = ?'}
+],medium:[
+{t:'t',n:'The Sand Timer',s:'A 3-min and 7-min sand timer. Start both. When the 3-min runs out, how many minutes are LEFT on the 7-min timer?',a:'4',h:'7 - 3 = ?'},
+{t:'t',n:'Symbol Math',s:'△ + △ = 10. △ + ○ = 12. What is ○?',a:'7',h:'△ = 5. So 5 + ○ = 12.'},
+{t:'t',n:'Torch Pattern',s:'Torches: 1 on, 1 off, 2 on, 1 off, 3 on, 1 off, ___ on. How many next?',a:'4',h:'Pattern: 1, 2, 3... next is 4.'},
+{t:'t',n:'The Column Code',s:'Columns numbered 6, 3, 9. Code = (1st × 3rd) ÷ 2nd.',a:'18',h:'(6 × 9) ÷ 3 = 18'},
+{t:'t',n:'Floor Tiles',s:'A grid: 3 rows × 4 columns. How many tiles total?',a:'12',h:'3 × 4 = 12'},
+{t:'t',n:'The Gem Points',s:'Red gems = 3 pts. Blue = 5 pts. You have 3 red (9 pts). Need 19 total. How many blue gems?',a:'2',h:'19 - 9 = 10. 10 ÷ 5 = 2'},
+{t:'t',n:'The Odd Sum',s:'Sum of all single-digit odd numbers: 1+3+5+7+9 = ?',a:'25',h:'Add them up step by step.'},
+{t:'c',n:'The Lever Puzzle',s:'4 levers. Rule: B must be UP. A and C must be opposite. Currently A=UP, B=DOWN, C=UP. Which TWO flip?',a:'B AND C',c:['A and B','B and C','C and D','A and D'],h:'Flip B up. Make C opposite of A (down).'},
+{t:'t',n:'Number Spiral',s:'Sequence: 1, 1, 2, 3, 5, 8, 13, 21, ___. Each = sum of previous two.',a:'34',h:'13 + 21 = ?'},
+{t:'t',n:'Shadow Clock',s:'A shadow moves 30° per hour. Started at 0°, now at 150°. Hours passed?',a:'5',h:'150 ÷ 30 = ?'}
+],hard:[
+{t:'t',n:'The Ancient Lock',s:'3-digit code. All digits sum to 12. Middle digit is 3. First digit is double the last.',a:'633',h:'Mid=3. If last=3, first=6. 6+3+3=12.'},
+{t:'t',n:'Shifting Stairs',s:'Step 1=1, Step 2=3, Step 3=5, Step 4=7. Pattern: odd numbers. Step 10?',a:'19',h:'Step n = 2n-1. Step 10 = 19.'},
+{t:'t',n:'The Rope Bridge',s:'20 planks. Every 3rd is broken (3,6,9,12,15,18). Every 5th is weak (5,10,15,20). 15 overlaps. How many SAFE planks?',a:'12',h:'Broken: 6. Weak: 4. Overlap: 1. Unsafe: 9. Safe: 20-8=12.'},
+{t:'t',n:'Water Chamber',s:'Water rises 2cm/min. Room is 60cm. Starting water: 10cm. Drain removes 0.5cm/min. Net rise: 1.5cm/min. Minutes to fill?',a:'33',h:'Need 50cm. 50÷1.5≈33'},
+{t:'c',n:'Three Chests',s:'Chest A: "Gold is in B." Chest B: "Gold is NOT here." Chest C: "Gold is in A." Only ONE label is true.',a:'B',c:['Chest A','Chest B','Chest C'],h:'If gold in B: A=true, B=false, C=false. Only one true. Works!'},
+{t:'t',n:'The Countdown',s:'100, 95, 85, 70, 50, ___. Differences: 5, 10, 15, 20, ___. Next difference?',a:'25',h:'Differences increase by 5. 50-25=25.'},
+{t:'t',n:'Light Beams',s:'3 mirrors. Mirror 1 adds 45°, Mirror 2 adds 90°, Mirror 3 adds 45°. Start at 0°. Final angle?',a:'180',h:'0+45+90+45=180'},
+{t:'t',n:'Symbol Wall',s:'★=2, ◆=3, ●=4. Calculate: (★×◆)+(●×★)-◆',a:'11',h:'(2×3)+(4×2)-3 = 6+8-3 = 11'},
+{t:'t',n:'Chain Links',s:'A chain has 7 links. You need to split it into ALL individual links. Minimum cuts?',a:'3',h:'You need to cut to separate them. Think about which cuts free the most.'},
+{t:'t',n:'Pillar Heights',s:'5 pillars: 12, 7, 15, 3, 8. Sort shortest to tallest. What is the MIDDLE height?',a:'8',h:'Sorted: 3,7,8,12,15. Middle=8.'},
+{t:'t',n:'The Poison Cups',s:'8 cups, 1 poisoned (heavier). Using a balance scale, minimum weighings to GUARANTEE finding it?',a:'2',h:'Split 3-3-2. Weigh 3v3. Narrow down.'},
+{t:'t',n:'Average Trap',s:'Five numbers: 10, 20, 30, 40, ___. The average of all five must be 25. What is the missing number?',a:'25',h:'Sum must be 125. 10+20+30+40=100. Missing=25.'},
+{t:'t',n:'The Grid Walk',s:'A 4×4 grid. Start at top-left, end at bottom-right. Only move right or down. How many different paths?',a:'20',h:'Choose 3 downs from 6 moves: C(6,3)=20'},
+{t:'t',n:'Age Puzzle',s:'A father is 3x his sons age. In 12 years he will be 2x his sons age. How old is the son NOW?',a:'12',h:'Son=x, Dad=3x. 3x+12=2(x+12). 3x+12=2x+24. x=12.'},
+{t:'t',n:'The Final Gate',s:'Code: multiply the number of sides on a triangle by the number of sides on a pentagon, then subtract the sides of a square.',a:'11',h:'3×5=15. 15-4=11.'}
+]},murder:{easy:[
+{t:'t',n:'The Locked Drawer',s:'Note says: "My age next year minus my age last year." This is always the same for anyone.',a:'2',h:'(age+1)-(age-1)=2. Always.'},
+{t:'t',n:'Suspect Count',s:'5 people in the house. 1 is the victim. 1 is you. How many suspects?',a:'3',h:'5-1-1=3'},
+{t:'c',n:'Broken Window',s:'Glass shards are OUTSIDE on the ground. The window broke from which direction?',a:'INSIDE',c:['From outside','From inside'],h:'Glass falls in the direction of force.'},
+{t:'t',n:'The Time Gap',s:'Watch stopped at 8:45. Neighbor heard noise at 8:30. Minutes between?',a:'15',h:'8:45-8:30=15'},
+{t:'t',n:'Mirror Note',s:'Note reads backwards: "PLEH EM". What does it actually say?',a:'HELP ME',h:'Reverse: EM PLEH → HELP ME'}
+],medium:[
+{t:'t',n:'Coffee Temperature',s:'Coffee starts 90°, loses 10° per 30min. Room temp=20°. A cup is now 70°. Minutes since poured?',a:'60',h:'90→70 = dropped 20°. At 10° per 30min = 60min.'},
+{t:'t',n:'The Safe Code',s:'Reverse the house number 4127.',a:'7214',h:'4127 backwards.'},
+{t:'t',n:'Alibi Check',s:'Suspect left at 6:15 PM, drove 45 min, says arrived 7:00 PM. Does math work? YES or NO.',a:'YES',h:'6:15+45min=7:00. Correct.'},
+{t:'c',n:'Blood Drops',s:'Blood drops on the floor are perfectly round circles. Blood fell from what angle?',a:'STRAIGHT DOWN',c:['An angle','Straight down','While running','Very high'],h:'Round drops = fell straight down.'},
+{t:'t',n:'Shoe Print',s:'Muddy print is size 11. Suspect A=size 9, B=size 11, C=size 10. Which suspect? (A, B, or C)',a:'B',h:'Size 11 matches B.'},
+{t:'t',n:'Phone Records',s:'Call started 7:02, lasted 4 minutes. What time did it end? (format: 7:06)',a:'7:06',h:'7:02+4min=7:06'},
+{t:'t',n:'The Combination',s:'Diary says: "Code is the number of letters in DETECTIVE."',a:'9',h:'D-E-T-E-C-T-I-V-E = 9 letters.'},
+{t:'t',n:'The Weight Clue',s:'Murder weapon weighs 2.5 kg. Suspect could only carry items under 3 kg with one hand. Could they carry it? YES or NO.',a:'YES',h:'2.5 < 3. Yes.'},
+{t:'t',n:'Camera Footage',s:'Camera records in 15-min intervals. Incident at 7:22. Which recording slot captured it? (format: 7:15)',a:'7:15',h:'7:15-7:30 slot captures 7:22.'},
+{t:'t',n:'The Missing Key',s:'5 keys on a ring. 1 is gold, 2 are silver, 2 are bronze. The correct key is NOT gold and NOT bronze. How many possible keys?',a:'2',h:'Not gold (remove 1), not bronze (remove 2). Leaves 2 silver.'}
+],hard:[
+{t:'t',n:'The Timeline',s:'Events: Dinner 6:00. Power out 7:10. Shot heard 7:13. Clock stopped 7:15. Body found 9:00. Minutes between shot and clock stopping?',a:'2',h:'7:15-7:13=2'},
+{t:'t',n:'The Cipher Note',s:'Each letter shifted by 1. B=A, C=B, D=C... Coded message: "UIJOL". Decode it.',a:'THINK',h:'Shift back: U→T, I→H, J→I, O→N, L→K.'},
+{t:'t',n:'Logic Alibis',s:'3 suspects. One always lies, one always tells truth, one is random. Suspect 1 says "I didnt do it." Suspect 2 says "Suspect 1 is lying." If suspect 1 is the truth-teller, did suspect 1 do it? YES or NO.',a:'NO',h:'Truth-teller says "I didn\'t do it" = true.'},
+{t:'t',n:'The Locked Room',s:'Room locked from inside. Key in victim pocket. Window open 3 inches. A key is 2 inches long. Could someone throw the key through? YES or NO.',a:'YES',h:'2 inches < 3 inches. Fits.'},
+{t:'t',n:'Estimated Time',s:'Body temp drops 1.5°F per hour after death. Normal=98.6°F. Body is now 89.6°F. Hours since death?',a:'6',h:'98.6-89.6=9. 9÷1.5=6.'},
+{t:'t',n:'The DNA Odds',s:'DNA match probability: 1 in 1,000,000. City has 500,000 people. Expected number of matches?',a:'0.5',h:'500000÷1000000=0.5'},
+{t:'c',n:'The Poison Glass',s:'4 glasses. You can only test 2. Glass A and B tested clean. The poison is in one of the untested glasses. Probability its in Glass C?',a:'50%',c:['25%','50%','75%','100%'],h:'2 untested glasses, equal chance: 50%.'},
+{t:'t',n:'Door Locks',s:'3 doors. Each needs a different key. You have 3 keys. Worst case, how many total attempts to open ALL doors?',a:'6',h:'Door 1: max 3 tries. Door 2: max 2. Door 3: max 1. Total=6.'},
+{t:'t',n:'Money Trail',s:'Victim had $500. $120 in wallet, $215 in safe, $80 in desk. How much is unaccounted for?',a:'85',h:'120+215+80=415. 500-415=85.'},
+{t:'t',n:'The Witness Count',s:'8 apartments face the crime scene. 3 had curtains closed. 2 of the remaining were empty. How many could have witnessed?',a:'3',h:'8-3-2=3'},
+{t:'t',n:'Speed Calculation',s:'Suspect drove 90 miles in 1.5 hours. What was their average speed in mph?',a:'60',h:'90÷1.5=60'},
+{t:'t',n:'The Backwards Clock',s:'A clock runs backwards. It shows 4:00. Real time is the mirror opposite on a clock face. What time is it really? (format like 8:00)',a:'8:00',h:'Mirror of 4 on a clock = 8.'},
+{t:'t',n:'Elevator Logic',s:'Building has 10 floors. Victim on floor 7. Suspect seen on floor 3. Elevator takes 8 seconds per floor. Stairs take 12 seconds per floor. Fastest time to reach floor 7 from 3?',a:'32',h:'4 floors × 8 sec (elevator) = 32 sec.'},
+{t:'t',n:'The Percentage',s:'Weapon has 3 fingerprints. The victims, the butler, and one unknown. What percentage of prints are unidentified?',a:'33',h:'1 out of 3 ≈ 33%.'},
+{t:'t',n:'Final Deduction',s:'The killer is NOT the tallest suspect. NOT the youngest. 3 suspects: A(tall,old), B(short,young), C(medium,medium). Who is it?',a:'C',h:'A is tallest (eliminated). B is youngest (eliminated). C remains.'}
+]},decl:{easy:[
+{t:'t',n:'The Desk Lock',s:'Lock needs the first 3 letters of "DECLARATION".',a:'DEC',h:'D-E-C'},
+{t:'t',n:'The Bookshelf',s:'Books numbered: 1, 2, 3, 5, 8, 13, ?, 34. Each number = sum of previous two. What is missing?',a:'21',h:'13+8=21'},
+{t:'c',n:'The Painting',s:'4 paintings. Clue: "Look behind the one showing a KEY." Which painting?',a:'THE KEY',c:['Landscape','Portrait','The Key','Flowers'],h:'The clue literally says "the one showing a KEY."'},
+{t:'t',n:'The UV Message',s:'"LOOK UNDER THE ______". 6-letter word for something covering the floor you walk on.',a:'CARPET',h:'What covers a floor?'},
+{t:'t',n:'The Final Box',s:'Box lock needs: number of letters in "FREEDOM".',a:'7',h:'F-R-E-E-D-O-M = 7'}
+],medium:[
+{t:'t',n:'The Brick Wall',s:'Clue: "North wall, 3rd brick from left, 2nd from bottom." Give as two numbers separated by space.',a:'3 2',h:'3rd from left, 2nd from bottom.'},
+{t:'t',n:'The Piano Key',s:'"I have 88 keys but cant open a door." What am I?',a:'PIANO',h:'What instrument has 88 keys?'},
+{t:'t',n:'Music Box Code',s:'Notes played: C E G E. If C=1,D=2,E=3,F=4,G=5. What 4-digit number?',a:'1353',h:'C=1, E=3, G=5, E=3'},
+{t:'t',n:'The Clock Clue',s:'A clock stopped at 3:15. Take the hour and multiply by the minutes.',a:'45',h:'3 × 15 = 45'},
+{t:'t',n:'The Alphabet Shift',s:'A=1, B=2, C=3... What number is the letter H?',a:'8',h:'Count: A=1,B=2,C=3,D=4,E=5,F=6,G=7,H=8'},
+{t:'t',n:'The Combination Lock',s:'3-digit code. First digit: number of vowels in ESCAPE. Second: consonants. Third: total letters minus 4.',a:'232',h:'ESCAPE: vowels=E,A,E=3... wait, E-S-C-A-P-E. Vowels: E,A,E=3. Consonants: S,C,P=3. Total=6, minus 4=2. Code: 332. Hmm... actually vowels are E,A,E but lets recount. E(v)S(c)C(c)A(v)P(c)E(v)=3 vowels,3 consonants. 6-4=2. Answer: 332'},
+{t:'t',n:'The Mirror Room',s:'You see "ƧTƎЯƆƎƧ" in a mirror. What word is it when read normally?',a:'SECRETS',h:'Mirror reversal of SECRETS.'},
+{t:'t',n:'The Scale Weight',s:'Left pan: object + 200g weight. Right pan: 500g weight. It balances. Object weighs?',a:'300',h:'Object + 200 = 500. Object = 300.'},
+{t:'t',n:'The Grid Cipher',s:'3×3 grid: Row1=A,B,C Row2=D,E,F Row3=G,H,I. Coordinates (1,2)(3,1)(2,3)(1,1). Read letters.',a:'BGFA',h:'(row,col): (1,2)=B, (3,1)=G, (2,3)=F, (1,1)=A'},
+{t:'t',n:'The Prime Door',s:'The code is the 5th prime number. Primes: 2, 3, 5, 7, ___.',a:'11',h:'2,3,5,7,11. Fifth prime is 11.'}
+],hard:[
+{t:'t',n:'Binary Lock',s:'A screen shows: 01001000 01001001. Each 8 bits = a letter (ASCII). 01001000=72=H, 01001001=73=I. What word?',a:'HI',h:'72=H, 73=I. Spells HI.'},
+{t:'t',n:'The Square Roots',s:'Code = √144 followed by √81. Two numbers, no space.',a:'129',h:'√144=12, √81=9. Together: 129'},
+{t:'t',n:'The Fraction Key',s:'Solve: (3/4) × (2/3) × 100 = ?',a:'50',h:'3/4 × 2/3 = 6/12 = 1/2. 1/2 × 100 = 50.'},
+{t:'t',n:'Letter Values',s:'A=1,B=2...Z=26. What is the value of C+A+T?',a:'24',h:'C=3, A=1, T=20. 3+1+20=24.'},
+{t:'t',n:'The Perimeter',s:'A room is 8 meters long and 5 meters wide. Whats the perimeter?',a:'26',h:'2×(8+5) = 2×13 = 26'},
+{t:'c',n:'The Truth Door',s:'Two guards. One ALWAYS lies, one ALWAYS tells truth. You ask one: "Would the OTHER guard say this door is safe?" He says YES. Is the door safe?',a:'NO',c:['Yes','No'],h:'Both truth-teller and liar give the OPPOSITE answer through this double-question.'},
+{t:'t',n:'Speed of Light',s:'Light travels 300,000 km/sec. How far in 2 seconds? Answer in km.',a:'600000',h:'300000 × 2 = 600000'},
+{t:'t',n:'The Anagram',s:'Rearrange "COTED NUMI" into a 2-word phrase meaning "a paper with information."',a:'DOCUMENT I',h:'Hint: starts with DOC...'},
+{t:'t',n:'Percentage Off',s:'A $80 item is 25% off. What do you pay?',a:'60',h:'25% of 80 = 20. 80-20 = 60.'},
+{t:'t',n:'The Volume',s:'A box is 3cm × 4cm × 5cm. Volume in cubic cm?',a:'60',h:'3×4×5 = 60'},
+{t:'t',n:'Missing Angle',s:'A triangle has angles of 60° and 80°. All angles in a triangle = 180°. Third angle?',a:'40',h:'180-60-80 = 40'},
+{t:'t',n:'Digit Sum',s:'Add ALL the digits of the number 9,876: 9+8+7+6 = ?',a:'30',h:'9+8=17, 17+7=24, 24+6=30.'},
+{t:'t',n:'The Ratio',s:'Recipe: 2 cups flour for every 3 cups sugar. You have 6 cups flour. How many cups sugar?',a:'9',h:'6÷2=3. 3×3=9.'},
+{t:'t',n:'Power of Two',s:'2×2×2×2×2×2×2×2 = 2^8 = ?',a:'256',h:'Keep doubling: 2,4,8,16,32,64,128,256.'},
+{t:'t',n:'The Declaration',s:'Final lock: How many letters in the word "INDEPENDENCE"?',a:'12',h:'I-N-D-E-P-E-N-D-E-N-C-E = 12'}
+]}};
+
+// ═══ STATE ═══
+let room=null,mode='solo',diff='easy',maxP=4,myId=null,rmId=null,rmRef=null,isH=false,ls=[],GS=null,ti=null;
+function sh(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none'});const e=document.getElementById(id);e.classList.add('active');e.style.display='flex'}
+function gc(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<5;i++)r+=c[~~(Math.random()*c.length)];return r}
+
+function selRoom(r){room=r;const nm={egypt:"Pharaoh's Tomb",murder:'Murder Mystery',decl:'Hidden Declaration'};document.getElementById('sT').textContent=nm[r];const ps=document.getElementById('pSel');ps.innerHTML='';for(let i=2;i<=8;i++){const d=document.createElement('div');d.className='psb'+(i===4?' s':'');d.textContent=i;d.onclick=()=>{maxP=i;ps.querySelectorAll('.psb').forEach(x=>x.classList.remove('s'));d.classList.add('s')};ps.appendChild(d)}sh('setup')}
+function sMode(m,el){mode=m;document.querySelectorAll('.mbt').forEach(b=>b.classList.remove('s'));el.classList.add('s');document.getElementById('soloO').style.display=m==='solo'?'block':'none';document.getElementById('multiO').style.display=m==='multi'?'block':'none'}
+function sDiff(d,el){diff=d;document.querySelectorAll('.dbt').forEach(b=>b.classList.remove('s'));el.classList.add('s');el.classList.add(d==='easy'?'e':d==='medium'?'m':'h')}
+
+function startSolo(){
+  const name=document.getElementById('sN').value.trim()||'Player';myId='solo';
+  const pz=P[room][diff];
+  GS={room,diff,mode:'solo',pz:pz.map((p,i)=>({...p,ok:false,i})),cp:0,pl:{solo:{name}},cl:CLUES[diff],st:Date.now(),dur:TIMES[diff],status:'playing',ht:false,chat:[]};
+  sh('gs');startTi();rG()}
+
+// ═══ MULTI ═══
+async function createM(){
+  const name=document.getElementById('mN').value.trim()||'Player';const code=gc();
+  myId='p_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);rmId=code;rmRef=db.ref(RT+'/r/'+code);
+  await rmRef.set({code,host:myId,room,diff,maxP,status:'waiting',pl:{}});
+  await rmRef.child('pl/'+myId).set({name,i:0});isH=true;setupW()}
+async function joinM(){
+  const name=document.getElementById('mN').value.trim()||'Player';const code=document.getElementById('mC').value.trim().toUpperCase();
+  if(!code)return toast('Enter code');rmRef=db.ref(RT+'/r/'+code);const sn=await rmRef.once('value');
+  if(!sn.exists())return toast('Not found');const d=sn.val();if(d.status!=='waiting')return toast('Started');
+  const pc=Object.keys(d.pl||{}).length;if(pc>=d.maxP)return toast('Full');
+  myId='p_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);rmId=code;
+  await rmRef.child('pl/'+myId).set({name,i:pc});isH=false;room=d.room;diff=d.diff;setupW()}
+function setupW(){
+  const nm={egypt:"Pharaoh's Tomb",murder:'Murder Mystery',decl:'Hidden Declaration'};
+  document.getElementById('wT').textContent=nm[room];document.getElementById('wC').textContent=rmId;sh('wait');
+  const cl=['#cc3333','#3366cc','#33aa55','#cc9933','#9933cc','#33aaaa','#cc6633','#6633cc'];
+  const plR=rmRef.child('pl'),stR=rmRef.child('status');
+  const onP=plR.on('value',sn=>{const pl=sn.val()||{},li=document.getElementById('wP');li.innerHTML='';
+    Object.entries(pl).sort((a,b)=>a[1].i-b[1].i).forEach(([id,p],i)=>{const l=document.createElement('li');l.innerHTML=`<span class="pdt" style="background:${cl[i]}"></span>${p.name}${id===myId?' (You)':''}`;li.appendChild(l)});
+    const n=Object.keys(pl).length;document.getElementById('wS').textContent=n>=2?n+' ready':'Waiting...';document.getElementById('wB').style.display=(n>=2&&isH)?'block':'none'});
+  ls.push(()=>plR.off('value',onP));
+  const onS=stR.on('value',sn=>{if(sn.val()==='playing')startFromHost()});ls.push(()=>stR.off('value',onS))}
+async function startMG(){if(!isH)return;const sn=await rmRef.child('pl').once('value');const pl=sn.val();const pz=P[room][diff];
+  const gs={room,diff,mode:'multi',pz:pz.map((p,i)=>({...p,ok:false,i})),cp:0,pl,cl:CLUES[diff],st:Date.now(),dur:TIMES[diff],status:'playing',ht:false,chat:[]};
+  await rmRef.update({status:'playing',gs})}
+function startFromHost(){sh('gs');const gsR=rmRef.child('gs');const on=gsR.on('value',sn=>{GS=sn.val();if(GS){rG();if(!ti)startTi()}});ls.push(()=>gsR.off('value',on))}
+function leaveM(){if(rmRef&&myId)rmRef.child('pl/'+myId).remove();ls.forEach(f=>f());ls=[];clearInterval(ti);ti=null;sh('menu')}
+
+// ═══ TIMER ═══
+function startTi(){clearInterval(ti);ti=setInterval(()=>{if(!GS||GS.status!=='playing')return;
+  const rem=Math.max(0,GS.dur-(Date.now()-GS.st));const m=~~(rem/60000),s=~~((rem%60000)/1000);
+  const el=document.getElementById('gTm');el.textContent=m+':'+(s<10?'0':'')+s;el.classList.toggle('u',rem<120000);
+  if(rem<=0){clearInterval(ti);ti=null;endG(false)}},1000)}
+
+// ═══ RENDER ═══
+function rG(){if(!GS)return;
+  const nm={egypt:'🏛️ Pharaoh\'s Tomb',murder:'🔍 Murder Mystery',decl:'📜 Hidden Declaration'};
+  const th={egypt:'egypt-t',murder:'murder-t',decl:'decl-t'};
+  document.getElementById('gTi').textContent=nm[GS.room];
+  document.getElementById('gCl').textContent='💡 '+GS.cl;
+  document.getElementById('gPr').textContent=(GS.cp+1)+'/'+GS.pz.length;
+  document.getElementById('cBtn').disabled=GS.cl<=0;
+  const gb=document.getElementById('gB');gb.className='gb '+th[GS.room];
+  if(GS.status==='won'||GS.status==='lost'){rRes();return}
+  const pz=GS.pz[GS.cp];if(!pz){endG(true);return}
+  let h=`<div class="pc"><h3>Puzzle ${GS.cp+1}: ${pz.n}</h3><div class="ps">${pz.s}</div>`;
+  if(pz.t==='c'){h+='<div class="ch">';pz.c.forEach(c=>{h+=`<div class="cb" onclick="subC('${c.replace(/'/g,"\\'")}')">${c}</div>`});h+='</div>'}
+  else{h+=`<div class="pi"><input id="pAns" placeholder="Type answer..." onkeydown="if(event.key==='Enter')subA()"><button class="b bg" onclick="subA()">Submit</button></div>`}
+  h+=`<div class="ph${GS.ht?' sh':''}" id="pHint">${pz.h||''}</div><div class="pf" id="pFb"></div></div>`;
+  if(GS.mode==='multi'){h+=`<div class="cht"><h4>💬 Team Chat</h4><div class="cms" id="cMs">${(GS.chat||[]).slice(-20).map(m=>`<div><strong>${m.n}:</strong> ${m.t}</div>`).join('')}</div><div class="cr"><input id="cIn" placeholder="Type..." onkeydown="if(event.key==='Enter')sChat()"><button class="b bs bg" onclick="sChat()">Send</button></div></div>`}
+  gb.innerHTML=h;if(GS.mode==='multi'){const cm=document.getElementById('cMs');if(cm)cm.scrollTop=cm.scrollHeight}}
+
+function subA(){const inp=document.getElementById('pAns');if(!inp)return;const a=inp.value.trim().toUpperCase();if(!a)return;chkA(a)}
+function subC(c){chkA(c.toUpperCase())}
+function chkA(a){
+  const pz=GS.pz[GS.cp];let correct=pz.a.toUpperCase();
+  // Flexible matching
+  if(a===correct||a.replace(/\s/g,'')=== correct.replace(/\s/g,'')){
+    const fb=document.getElementById('pFb');fb.textContent='✓ Correct!';fb.className='pf c';
+    const gs=GS.mode==='solo'?GS:JSON.parse(JSON.stringify(GS));
+    gs.pz[gs.cp].ok=true;gs.cp++;gs.ht=false;
+    if(gs.cp>=gs.pz.length)gs.status='won';
+    if(GS.mode==='solo'){GS=gs;setTimeout(rG,800)}else{rmRef.child('gs').set(gs)}
+  }else{const fb=document.getElementById('pFb');fb.textContent='✗ Wrong — try again';fb.className='pf w';setTimeout(()=>{if(fb)fb.textContent=''},2000)}}
+
+function useClue(){if(!GS||GS.cl<=0)return;
+  if(GS.mode==='solo'){GS.cl--;GS.ht=true;rG()}
+  else{const gs=JSON.parse(JSON.stringify(GS));gs.cl--;gs.ht=true;rmRef.child('gs').set(gs)}}
+
+async function sChat(){const inp=document.getElementById('cIn');if(!inp)return;const t=inp.value.trim();if(!t)return;
+  const n=GS.pl[myId]?.name||'Player';
+  if(GS.mode==='multi'){const gs=JSON.parse(JSON.stringify(GS));if(!gs.chat)gs.chat=[];gs.chat.push({n,t,d:Date.now()});if(gs.chat.length>50)gs.chat=gs.chat.slice(-50);await rmRef.child('gs').set(gs)}inp.value=''}
+
+function endG(won){clearInterval(ti);ti=null;
+  if(GS.mode==='solo'){GS.status=won?'won':'lost';rG()}
+  else{const gs=JSON.parse(JSON.stringify(GS));gs.status=won?'won':'lost';rmRef.child('gs').set(gs)}}
+
+function rRes(){
+  const el=Date.now()-GS.st,m=~~(el/60000),s=~~((el%60000)/1000);
+  const solved=GS.pz.filter(p=>p.ok).length,total=GS.pz.length,won=GS.status==='won';
+  const used=(GS.diff==='easy'?3:GS.diff==='medium'?2:1)-GS.cl;
+  document.getElementById('gB').innerHTML=`<div class="res ${won?'w':'l'}">
+    <div style="font-size:3rem;margin-bottom:8px">${won?'🎉':'💀'}</div>
+    <h2>${won?'ESCAPED!':'TIME\'S UP!'}</h2>
+    <p style="color:var(--dm);margin:8px 0">${won?'You solved all puzzles!':'The room claims another victim...'}</p>
+    <div style="margin:16px 0">
+      <div style="font-size:.85rem;color:var(--dm)">Solved: <strong style="color:var(--tx)">${solved}/${total}</strong></div>
+      <div style="font-size:.85rem;color:var(--dm)">Time: <strong style="color:var(--tx)">${m}m ${s}s</strong></div>
+      <div style="font-size:.85rem;color:var(--dm)">Clues Used: <strong style="color:var(--tx)">${used}</strong></div>
+      <div style="font-size:.85rem;color:var(--dm)">Difficulty: <strong style="color:var(--tx)">${GS.diff}</strong></div>
+    </div>
+    <button class="b bg" onclick="location.reload()" style="border-radius:50px;margin-top:8px">Play Again</button></div>`}
+
+function toast(m){const c=document.getElementById('tbx'),t=document.createElement('div');t.className='to';t.textContent=m;c.appendChild(t);setTimeout(()=>t.remove(),3000)}
+</script>
+</body>
+</html>
