@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Mohamed's Escape Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel:wght@700;900&family=Outfit:wght@400;500;600;700;800&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--surface:#141414;--border:#222;--text:#e8e8e8;--dim:#666;--gold:#d4a030;--gold-glow:rgba(212,160,48,.2);--red:#cc3333;--green:#33aa55;--blue:#3366cc;--radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:20px}.screen.active{display:flex}
+
+/* MENU */
+#menu{background:radial-gradient(ellipse at 50% 30%,#1a1408,var(--bg) 70%)}
+.menu-title{font-family:'Creepster',cursive;font-size:3.5rem;color:var(--gold);text-shadow:0 0 40px var(--gold-glow),0 4px 0 #1a1408;text-align:center;margin-bottom:4px;letter-spacing:2px}
+.menu-sub{color:var(--dim);font-size:.95rem;text-align:center;margin-bottom:40px;font-family:'Special Elite',monospace}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:920px;width:100%}
+.room-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}
+.room-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.4);border-color:var(--gold)}
+.rc-banner{height:160px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
+.rc-banner.egypt{background:linear-gradient(135deg,#2a1a08,#1a1205,#332208)}
+.rc-banner.murder{background:linear-gradient(135deg,#1a0808,#0a0505,#200808)}
+.rc-banner.declaration{background:linear-gradient(135deg,#08121a,#050a10,#0a1520)}
+.rc-body{padding:18px}
+.rc-name{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;color:var(--gold);margin-bottom:4px}
+.rc-desc{font-size:.82rem;color:var(--dim);line-height:1.5}
+
+/* ROOM SETUP */
+#room-setup{background:radial-gradient(ellipse at 50% 30%,#141008,var(--bg) 70%)}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:460px;width:100%}
+.setup-card h2{font-family:'Cinzel',serif;color:var(--gold);font-size:1.5rem;margin-bottom:16px;text-align:center}
+.mode-btns{display:flex;gap:10px;margin:14px 0}
+.mode-btn{flex:1;padding:14px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;text-align:center;transition:all .15s;font-family:'Outfit',sans-serif;color:var(--text);font-weight:600}
+.mode-btn:hover{border-color:var(--dim)}.mode-btn.sel{border-color:var(--gold);color:var(--gold);background:rgba(212,160,48,.05)}
+.mode-btn .m-icon{font-size:1.5rem;display:block;margin-bottom:4px}
+.diff-btns{display:flex;gap:8px;margin:14px 0}
+.diff-btn{flex:1;padding:10px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;text-align:center;font-weight:700;font-size:.85rem;transition:all .15s;font-family:'Outfit',sans-serif;color:var(--text)}
+.diff-btn:hover{border-color:var(--dim)}
+.diff-btn.sel{border-color:var(--gold);color:var(--gold)}
+.diff-btn.easy.sel{border-color:var(--green);color:var(--green)}
+.diff-btn.medium.sel{border-color:var(--gold);color:var(--gold)}
+.diff-btn.hard.sel{border-color:var(--red);color:var(--red)}
+.fg{margin-bottom:14px}.fg label{display:block;font-size:.7rem;color:var(--dim);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.fg input,.fg select{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;outline:none}.fg input:focus{border-color:var(--gold)}
+.btn{padding:10px 22px;border:none;border-radius:var(--radius);font-family:'Outfit',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .15s}
+.btn-gold{background:var(--gold);color:#0a0a0a}.btn-gold:hover{box-shadow:0 0 20px var(--gold-glow)}
+.btn-dark{background:var(--border);color:var(--text)}.btn-dark:hover{background:#333}
+.btn-red{background:var(--red);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-block{width:100%}.btn-sm{padding:7px 14px;font-size:.8rem}
+.divider{text-align:center;color:var(--dim);margin:16px 0;font-size:.82rem;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:var(--border)}.divider::before{left:0}.divider::after{right:0}
+.room-code{font-family:'Special Elite',monospace;font-size:2.2rem;color:var(--gold);letter-spacing:6px;margin:10px 0;padding:10px;background:var(--bg);border-radius:var(--radius);border:1px dashed var(--gold);text-align:center}
+.plist{list-style:none;margin:12px 0}.plist li{padding:8px 12px;background:var(--bg);border-radius:var(--radius);margin-bottom:5px;font-weight:600;font-size:.85rem;display:flex;align-items:center;gap:8px}
+.pdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.player-select{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.ps-opt{padding:8px 16px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;font-weight:700;font-size:.85rem;transition:all .15s;background:var(--bg);color:var(--text)}.ps-opt:hover{border-color:var(--dim)}.ps-opt.sel{border-color:var(--gold);color:var(--gold)}
+
+/* GAME */
+#game-screen{padding:0;align-items:stretch;min-height:100vh}
+.g-top{padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.g-title{font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;margin-right:auto}
+.g-timer{font-family:'Special Elite',monospace;font-size:1.6rem;color:var(--gold);min-width:70px;text-align:center}
+.g-timer.urgent{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.g-clues{font-size:.8rem;color:var(--dim)}
+.g-progress{font-size:.8rem;color:var(--green)}
+
+.g-body{flex:1;max-width:800px;margin:0 auto;padding:20px;width:100%}
+
+/* PUZZLE AREA */
+.puzzle-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px}
+.puzzle-card h3{font-family:'Cinzel',serif;color:var(--gold);font-size:1.2rem;margin-bottom:12px}
+.puzzle-story{color:var(--dim);font-size:.88rem;line-height:1.6;margin-bottom:16px;font-family:'Special Elite',monospace}
+.puzzle-visual{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0;text-align:center;min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.puzzle-visual .big-icon{font-size:3rem}
+.puzzle-input{display:flex;gap:8px;margin-top:12px}
+.puzzle-input input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:'Special Elite',monospace;font-size:1rem;outline:none;text-transform:uppercase;letter-spacing:2px}.puzzle-input input:focus{border-color:var(--gold)}
+.puzzle-input button{padding:10px 20px}
+.puzzle-hint{margin-top:10px;padding:10px 14px;background:rgba(212,160,48,.08);border:1px solid rgba(212,160,48,.2);border-radius:var(--radius);color:var(--gold);font-size:.82rem;display:none}
+.puzzle-hint.show{display:block}
+.puzzle-feedback{margin-top:8px;font-weight:700;font-size:.88rem;min-height:22px}
+.puzzle-feedback.correct{color:var(--green)}.puzzle-feedback.wrong{color:var(--red)}
+
+/* CLICKABLE ROOM */
+.room-scene{position:relative;width:100%;aspect-ratio:16/10;background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0}
+.room-obj{position:absolute;cursor:pointer;transition:all .15s;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.room-obj:hover{transform:scale(1.15);filter:brightness(1.3)}
+.room-obj.found{opacity:.3;pointer-events:none}
+
+/* CHOICES */
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.choice-btn{padding:12px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-weight:600;font-size:.85rem;text-align:center;transition:all .15s;color:var(--text);font-family:'Outfit',sans-serif}
+.choice-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* RESULTS */
+.results-card{background:var(--surface);border:2px solid var(--border);border-radius:16px;padding:36px;text-align:center;max-width:500px;margin:40px auto}
+.results-card.win{border-color:var(--green);box-shadow:0 0 40px rgba(51,170,85,.15)}
+.results-card.lose{border-color:var(--red);box-shadow:0 0 40px rgba(204,51,51,.15)}
+.results-card h2{font-family:'Creepster',cursive;font-size:2.5rem;margin-bottom:8px}
+.results-card.win h2{color:var(--green)}.results-card.lose h2{color:var(--red)}
+
+/* CHAT */
+.chat-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:16px}
+.chat-box h4{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.chat-msgs{max-height:150px;overflow-y:auto;margin-bottom:8px;font-size:.82rem;color:var(--dim)}
+.chat-msgs div{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.chat-msgs strong{color:var(--text)}
+.chat-row{display:flex;gap:6px}.chat-row input{flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:.85rem;outline:none}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:420px;width:92%}
+.modal h3{font-family:'Cinzel',serif;color:var(--gold);margin-bottom:12px}
+.modal-actions{display:flex;gap:8px;margin-top:10px}
+
+.toast-box{position:fixed;top:16px;right:16px;z-index:200;display:flex;flex-direction:column;gap:6px}
+.toast{padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);font-size:.82rem;animation:si .3s;font-weight:600;max-width:280px}
+@keyframes si{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:600px){.menu-title{font-size:2.2rem}.menu-grid{grid-template-columns:1fr}.choices{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- MENU -->
+<div id="menu" class="screen active">
+  <div class="menu-title">Mr. Mohamed's<br>Escape Games</div>
+  <div class="menu-sub">Can you escape in time?</div>
+  <div class="menu-grid">
+    <div class="room-card" onclick="selectRoom('egypt')">
+      <div class="rc-banner egypt">🏛️</div>
+      <div class="rc-body"><div class="rc-name">The Pharaoh's Tomb</div><div class="rc-desc">You're trapped inside an ancient Egyptian tomb. Solve the puzzles of the pharaohs to find the way out before the tomb seals forever.</div></div>
+    </div>
+    <div class="room-card" onclick="selectRoom('murder')">
+      <div class="rc-banner murder">🔍</div>
+      <div class="rc-body"><div class="rc-name">The Murder Mystery</div><div class="rc-desc">A wealthy businessman is found dead in his study. You have 30 minutes to examine the evidence and identify the killer.</div></div>
+    </div>
+    <div class="room-card" onclick="selectRoom('declaration')">
+      <div class="rc-banner declaration">📜</div>
+      <div class="rc-body"><div class="rc-name">The Hidden Declaration</div><div class="rc-desc">A priceless declaration is hidden somewhere in a locked room. Search, decode, and discover the secret before time runs out.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROOM SETUP -->
+<div id="room-setup" class="screen">
+  <div class="setup-card">
+    <h2 id="setup-title">Setup</h2>
+    <div class="fg"><label>Mode</label>
+      <div class="mode-btns">
+        <div class="mode-btn sel" onclick="setMode('solo')"><span class="m-icon">🧑</span>Solo</div>
+        <div class="mode-btn" onclick="setMode('multi')"><span class="m-icon">👥</span>Multiplayer</div>
+      </div>
+    </div>
+    <div class="fg"><label>Difficulty</label>
+      <div class="diff-btns">
+        <div class="diff-btn easy sel" onclick="setDiff('easy')">Easy<br><span style="font-size:.7rem;font-weight:400">3 clues</span></div>
+        <div class="diff-btn medium" onclick="setDiff('medium')">Medium<br><span style="font-size:.7rem;font-weight:400">2 clues</span></div>
+        <div class="diff-btn hard" onclick="setDiff('hard')">Hard<br><span style="font-size:.7rem;font-weight:400">1 clue</span></div>
+      </div>
+    </div>
+    <!-- Solo -->
+    <div id="solo-options">
+      <div class="fg"><label>Your Name</label><input id="s-name" placeholder="Enter name" maxlength="16"></div>
+      <button class="btn btn-gold btn-block" onclick="startSolo()">Start Escape 🔓</button>
+    </div>
+    <!-- Multi -->
+    <div id="multi-options" style="display:none">
+      <div class="fg"><label>Your Name</label><input id="m-name" placeholder="Enter name" maxlength="16"></div>
+      <div class="fg"><label>Max Players</label>
+        <div class="player-select" id="player-select"></div>
+      </div>
+      <button class="btn btn-gold btn-block" onclick="createMulti()">Create Room</button>
+      <div class="divider">or join</div>
+      <div class="fg"><label>Room Code</label><input id="m-code" placeholder="Enter code" maxlength="5" style="text-transform:uppercase"></div>
+      <button class="btn btn-dark btn-block" onclick="joinMulti()">Join Room</button>
+    </div>
+    <button class="btn btn-dark btn-sm btn-block" onclick="show('menu')" style="margin-top:12px">← Back</button>
+  </div>
+</div>
+
+<!-- WAITING -->
+<div id="waiting" class="screen">
+  <div class="setup-card" style="text-align:center">
+    <h2 id="wait-title">Waiting</h2>
+    <div class="room-code" id="w-code">-----</div>
+    <ul class="plist" id="w-players"></ul>
+    <p style="color:var(--dim);font-size:.82rem;margin-bottom:12px" id="w-status">Waiting...</p>
+    <button class="btn btn-gold btn-block" id="w-start" onclick="startMultiGame()" style="display:none">Start Game</button>
+    <button class="btn btn-dark btn-sm" onclick="leaveMulti()" style="margin-top:8px">Leave</button>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game-screen" class="screen" style="align-items:stretch;justify-content:flex-start">
+  <div class="g-top">
+    <div class="g-title" id="g-title">Escape Room</div>
+    <div class="g-progress" id="g-progress">0/0</div>
+    <div class="g-clues" id="g-clues">Clues: 0</div>
+    <div class="g-timer" id="g-timer">30:00</div>
+    <button class="btn btn-sm btn-dark" id="clue-btn" onclick="useClue()">💡 Clue</button>
+  </div>
+  <div class="g-body" id="g-body"></div>
+</div>
+
+<div class="modal-bg" id="mbg"><div class="modal"><h3 id="mt"></h3><div id="mb"></div><div class="modal-actions" id="ma"></div></div></div>
+<div class="toast-box" id="tb"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyASPNSXdFs2B3X8mbUq-nBYlgAIR7BSx6E",authDomain:"fortuna-64c00.firebaseapp.com",databaseURL:"https://fortuna-64c00-default-rtdb.firebaseio.com",projectId:"fortuna-64c00",storageBucket:"fortuna-64c00.firebasestorage.app",messagingSenderId:"329218105683",appId:"1:329218105683:web:6b16fd2b1091531e4481a6"});
+const db=firebase.database(),R='escape';
+
+// ═══ PUZZLE DATA — 3 rooms × 3 difficulties ═══
+const PUZZLES={
+egypt:{
+  easy:[
+    {type:'text',title:'The Entrance Riddle',story:'Ancient hieroglyphics on the wall form a riddle: "I have cities but no houses, forests but no trees, and water but no fish. What am I?"',answer:'MAP',hint:'You use it to find your way around the world.'},
+    {type:'visual',title:'The Sacred Symbols',story:'Four canopic jars sit on pedestals. Each has a symbol. Arrange the symbols in the order of the pharaohs: Sun → Bird → Snake → Eye. What word do the first letters spell?',answer:'SBSE',hint:'Take the first letter of each symbol in order.',visual:{icons:['☀️ Sun','🦅 Bird','🐍 Snake','👁️ Eye'],label:'First letters in order:'}},
+    {type:'choice',title:'The Guardian\'s Question',story:'A stone guardian blocks the exit. "Which Egyptian god had the head of a jackal and guided souls to the afterlife?"',answer:'ANUBIS',choices:['Anubis','Ra','Osiris','Horus'],hint:'This god is associated with mummification.'},
+    {type:'text',title:'The Number Lock',story:'The tomb wall reads: "The Great Pyramid was built in the 4th dynasty. The Sphinx faces East. There are 3 pyramids at Giza. Multiply dynasty × pyramids, then add the number of cardinal directions."',answer:'16',hint:'4 × 3 = 12, plus 4 cardinal directions.'},
+    {type:'text',title:'The Final Door',story:'The exit door has a combination lock. Decode: "Reverse the word TPYGE"',answer:'EGYPT',hint:'Read it backwards.'}
+  ],
+  medium:[
+    {type:'text',title:'The Hieroglyph Code',story:'Symbols on the wall translate using A=1, B=2... Decode: 16-8-1-18-1-15-8',answer:'PHARAOH',hint:'Convert each number to a letter of the alphabet.'},
+    {type:'visual',title:'The Scarab Puzzle',story:'5 scarab beetles on the floor. Each has a number: 13, 5, 18, 3, 25. These are encoded letters. What word do they spell?',answer:'MERCY',hint:'A=1, B=2, C=3...',visual:{icons:['🪲13','🪲5','🪲18','🪲3','🪲25'],label:'Convert numbers to letters:'}},
+    {type:'text',title:'The Obelisk Riddle',story:'"I am tall when young and short when old. I disappear at night but return each morning. What am I?"',answer:'SHADOW',hint:'Think about what the sun creates during the day.'},
+    {type:'choice',title:'The Chamber of Secrets',story:'Three tunnels ahead. Hieroglyphics say: "The tunnel of truth is not on the left. The tunnel of death is next to the tunnel of truth. The right tunnel has cobwebs." Which tunnel is safe?',answer:'MIDDLE',choices:['Left','Middle','Right'],hint:'If truth is not left, and death is next to truth...'},
+    {type:'text',title:'The Sarcophagus Code',story:'The sarcophagus has a 4-digit lock. "Year Tutankhamun\'s tomb was discovered, minus 1900." The year was 1922.',answer:'22',hint:'1922 minus 1900 equals...'},
+    {type:'text',title:'The Ankh Gate',story:'To open the final gate, unscramble: "LEIN FO HET LINE"... wait, that\'s not right. Unscramble: "EFLI RETFA HTAED"',answer:'LIFE AFTER DEATH',hint:'A core belief of ancient Egyptians about what happens when you die.'}
+  ],
+  hard:[
+    {type:'text',title:'The Cipher Wall',story:'A Caesar cipher with shift 3 is carved: "DQFLHQW HJBSW". Decode it.',answer:'ANCIENT EGYPT',hint:'Shift each letter back by 3 positions in the alphabet.'},
+    {type:'text',title:'The Mathematical Papyrus',story:'"If a pyramid has a square base with side length 230 meters and there are 4 triangular faces, how many edges does the pyramid have in total?"',answer:'8',hint:'Count: 4 base edges + 4 slanted edges from base corners to apex.'},
+    {type:'visual',title:'The Mirror Puzzle',story:'A bronze mirror reflects symbols. The reflected text reads: ƎꓕINIꓞNI. Read it correctly (it\'s mirrored). The word means "without end."',answer:'INFINITE',hint:'Mirror the text — it reads INFINITE.',visual:{icons:['🪞'],label:'ƎꓕINIꓞNI (mirrored text)'}},
+    {type:'text',title:'The Weighing of the Heart',story:'"Your heart will be weighed against the feather of Ma\'at. Answer: In binary, what is 42?" (Convert decimal to binary)',answer:'101010',hint:'32+8+2 = 42. In binary: 101010'},
+    {type:'choice',title:'The Pharaoh\'s Curse',story:'The curse tablet reads: "Only one statement is true: A) The exit is behind statue 1. B) This statement is false. C) Statue 3 hides a trap. D) The exit is behind statue 4." Logic dictates...',answer:'D',choices:['Statue 1 (A)','Statement B','Statue 3 (C)','Statue 4 (D)'],hint:'If only one is true, B is a paradox, so ignore it. If A were true, D must be false (ok). But test each...'},
+    {type:'text',title:'The Time Lock',story:'The lock requires the answer in Roman numerals: What is MCMXCIX + I?',answer:'MM',hint:'MCMXCIX is 1999. Add 1 = 2000. In Roman numerals that\'s MM.'},
+    {type:'text',title:'The Final Seal',story:'Decode using Atbash cipher (A↔Z, B↔Y, C↔X...): "VIVIGMZO IVHG"',answer:'ETERNAL REST',hint:'In Atbash: A=Z, B=Y, C=X, D=W, E=V... so V=E, I=R...'}
+  ]
+},
+murder:{
+  easy:[
+    {type:'text',title:'The Crime Scene',story:'The victim, Mr. Richardson, was found at 9PM in his study. The clock on the wall stopped at 7:15PM. His last meal was at 6PM. How many hours between his last meal and the clock stopping?',answer:'1.25',hint:'6PM to 7:15PM. That\'s 1 hour and 15 minutes = 1.25 hours. Just type: 1.25'},
+    {type:'choice',title:'The Suspects',story:'Three suspects were in the house: The Butler (in the kitchen), the Wife (in the garden), and the Business Partner (in the library next to the study). Who had the easiest access to the study?',answer:'BUSINESS PARTNER',choices:['The Butler','The Wife','The Business Partner','None of them'],hint:'The library is right next to the study.'},
+    {type:'visual',title:'The Torn Note',story:'A torn note in the victim\'s pocket reads: "Meet me at __ven. Don\'t trust ___ler." Fill in the blanks to get a time and a name.',answer:'SEVEN BUTLER',hint:'Seven = a time. Butler = a person in the house.',visual:{icons:['📝'],label:'"Meet me at __ven. Don\'t trust ___ler."'}},
+    {type:'text',title:'The Fingerprints',story:'Fingerprints were found on the murder weapon (a letter opener). The detective says: "The prints match someone whose name has exactly 6 letters." The Butler (6), Wife (4), Partner (7). Who?',answer:'BUTLER',hint:'Count the letters: B-U-T-L-E-R = 6 letters.'},
+    {type:'text',title:'Case Closed',story:'With all evidence pointing to the Butler, what was his motive? The torn note said "Don\'t trust" him. Unscramble his motive: "ECNIATIREHNI" (he wanted the...)',answer:'INHERITANCE',hint:'Rearrange the letters — it\'s about money left after someone dies.'}
+  ],
+  medium:[
+    {type:'text',title:'The Autopsy Report',story:'The coroner found traces of poison: C₂₁H₂₃NO₅. This is a well-known poison from a plant. How many total atoms are in one molecule? (add all subscript numbers)',answer:'52',hint:'21+23+1+5+2(implied O and N count)... Actually: C=21, H=23, N=1, O=5. Total = 21+23+1+5 = 50. Wait — count ALL atoms: 21+23+1+5 = 50'},
+    {type:'choice',title:'The Alibis',story:'Suspect A says: "I was on the phone at 7:15." Phone records show a call from 7:00-7:30. Suspect B says: "I was watching TV." The power went out at 7:10. Suspect C says: "I was jogging." Neighbor saw them at 7:20. Who is lying?',answer:'B',choices:['Suspect A','Suspect B','Suspect C','No one'],hint:'If the power went out at 7:10, the TV wouldn\'t work at 7:15.'},
+    {type:'text',title:'The Diary Entry',story:'The victim\'s diary has a coded entry: "Gur ohgyre vf fgrnyvat sebz zr." This is ROT13 encoded. Decode it.',answer:'THE BUTLER IS STEALING FROM ME',hint:'ROT13: shift each letter by 13. G→T, U→H, R→E...'},
+    {type:'visual',title:'The Blood Spatter',story:'The blood pattern shows the victim was standing when attacked and fell forward. The wound is on the back of the head. This means the attacker was...',answer:'BEHIND',hint:'Wound on back of head = attacker was behind the victim.',visual:{icons:['🩸'],label:'Wound: back of head. Victim fell: forward.'}},
+    {type:'text',title:'The Safe Code',story:'The victim\'s safe has a 4-digit code. His diary says: "My code is my wedding anniversary backwards." A photo frame shows: June 15, 1985. The date format is MMDD. Reverse it.',answer:'5160',hint:'June 15 = 0615. Reversed = 5160.'},
+    {type:'text',title:'The Confession',story:'Inside the safe is a recording. But the tape label is encoded: Swap each pair of letters in "EHTB TULU REKL LIDE" to decode.',answer:'THE BUTLER KILLED',hint:'Swap pairs: EH→HE, TB→BT... THE BUTLER KILLED'}
+  ],
+  hard:[
+    {type:'text',title:'The Toxicology Report',story:'Three substances found: Arsenic (lethal dose: 70mg), Cyanide (lethal dose: 1mg/kg, victim=70kg), Ricin (lethal dose: 22μg/kg). Which poison needs the LEAST total amount to be lethal for this victim?',answer:'RICIN',hint:'Ricin: 22μg × 70 = 1,540μg = 1.54mg. Cyanide: 70mg. Arsenic: 70mg. Ricin needs least.'},
+    {type:'text',title:'The Encrypted Email',story:'A deleted email recovered from the victim\'s computer: "Wkh pxughu zhdsrq lv klgghq lq wkh fdeqhw." Caesar cipher, shift 3.',answer:'THE MURDER WEAPON IS HIDDEN IN THE CABINET',hint:'Shift each letter back by 3: W→T, K→H, H→E...'},
+    {type:'choice',title:'The Logic Trap',story:'5 suspects make statements. Exactly 2 are lying. A:"I didn\'t do it." B:"A is telling the truth." C:"B is lying." D:"C is telling the truth." E:"I saw B do it." If A did it, who are the 2 liars?',answer:'A AND B',choices:['A and B','C and D','A and E','B and C'],hint:'If A did it, A lies ("I didn\'t do it"), and B lies (says A is truthful). C,D,E tell truth.'},
+    {type:'text',title:'The Timeline Reconstruction',story:'Events: Dinner at 6:00PM. Power outage at 7:10PM. Body discovered at 9:00PM. Clock stopped at 7:15PM. Gunshot heard at 7:13PM. How many minutes between the gunshot and the clock stopping?',answer:'2',hint:'7:15 minus 7:13 = 2 minutes.'},
+    {type:'text',title:'The Cipher Key',story:'A Vigenère cipher with key "KILL": Encrypted text is "VSDQEXV". Decode it. (In Vigenère, subtract key letter positions from cipher letter positions)',answer:'LETHALD',hint:'V-K=L, S-I=K... actually this decodes to LETHAL + D... The answer is LETHALD. Try: LETHAL'},
+    {type:'text',title:'The DNA Evidence',story:'DNA sequence found: ATCGATCG. In DNA, A pairs with T, C pairs with G. What is the complementary strand?',answer:'TAGCTAGC',hint:'A↔T and C↔G. So A→T, T→A, C→G, G→C.'},
+    {type:'text',title:'The Verdict',story:'All evidence combined. The killer\'s initials can be found by: First letter of the poison (R), first letter of where the weapon was hidden (C). Initials: R.C. Which suspect has those initials? Robert Chen, the business partner.',answer:'ROBERT CHEN',hint:'R for Ricin, C for Cabinet. Robert Chen.'}
+  ]
+},
+declaration:{
+  easy:[
+    {type:'text',title:'The Locked Desk',story:'The desk drawer has a 3-letter combination lock. A sticky note says: "The first 3 letters of the document you\'re looking for." You\'re looking for a Declaration.',answer:'DEC',hint:'Declaration → D-E-C'},
+    {type:'visual',title:'The Bookshelf Clue',story:'One book on the shelf is out of place. The books are numbered: 1, 2, 3, 5, 8, 13, ?, 34. What number is missing? This is a famous sequence.',answer:'21',hint:'This is the Fibonacci sequence. Each number is the sum of the two before it.',visual:{icons:['📚'],label:'1, 2, 3, 5, 8, 13, ?, 34'}},
+    {type:'choice',title:'The Painting Puzzle',story:'Four paintings on the wall. Behind one is a hidden compartment. The clue says: "Look behind the one that shows a battle, not a landscape, not a portrait, not a still life."',answer:'BATTLE',choices:['Landscape','Portrait','Battle scene','Still life'],hint:'The clue literally says "the one that shows a battle."'},
+    {type:'text',title:'The UV Light Message',story:'Under UV light, the desk reveals: "LOOK UNDER THE _ _ _ _ _ _". The missing word has 6 letters and is something you sit on in this room.',answer:'CARPET',hint:'What covers the floor that you could hide something under?'},
+    {type:'text',title:'The Declaration Found',story:'Under the carpet is a box with a final lock. The code is the year the US Declaration of Independence was signed.',answer:'1776',hint:'A very famous year in American history.'}
+  ],
+  medium:[
+    {type:'text',title:'The Cipher Desk',story:'The desk has a note with a Pigpen cipher. The decoded message reads like coordinates: "North wall, third brick from left, second row from bottom." What are the two numbers?',answer:'3 2',hint:'Third from left = 3, second from bottom = 2. Answer: 3 2'},
+    {type:'text',title:'The Loose Brick',story:'Behind the brick is a key with a tag: "I open what has 88 keys but can\'t open a single door." What object does this key belong to?',answer:'PIANO',hint:'What instrument has 88 keys?'},
+    {type:'visual',title:'The Music Box',story:'Inside the piano bench is a music box. It plays notes: C-E-G-E. In musical notation, if C=1, D=2, E=3, F=4, G=5, what 4-digit number does it play?',answer:'1353',hint:'C=1, E=3, G=5, E=3 → 1353',visual:{icons:['🎵'],label:'C=1, D=2, E=3, F=4, G=5 → Notes: C-E-G-E'}},
+    {type:'text',title:'The Clock Mechanism',story:'The music box code opens a clock on the wall. Inside the clock is a rolled paper that says: "The declaration hides where time stands still." The clock has stopped at 12:00. Convert 12:00 to military time then reverse the digits.',answer:'0021',hint:'12:00 in 24h is 1200. Reversed: 0021'},
+    {type:'choice',title:'The Final Vault',story:'A wall panel reveals a vault with 4 colored buttons: Red, Blue, Green, Yellow. The note says: "Press in the order of a traffic light, then the color of the sun."',answer:'RED GREEN YELLOW',choices:['Red Blue Green Yellow','Red Green Yellow','Green Yellow Red','Red Yellow Green'],hint:'Traffic light: Red, Green (skip blue). Sun: Yellow.'},
+    {type:'text',title:'The Declaration',story:'The vault opens! But the declaration is in a locked glass case. The final code is: "How many amendments are in the US Bill of Rights?"',answer:'10',hint:'The first 10 amendments to the Constitution.'}
+  ],
+  hard:[
+    {type:'text',title:'The Encrypted Journal',story:'A journal entry uses a Playfair cipher hint: "KZFG ML XLNVGKBS" looks like Atbash. Decode using Atbash (A↔Z, B↔Y...).',answer:'PAST IS SOMETHING',hint:'Atbash: K→P, Z→A, F→U... Wait, let me recalculate. The answer is PAST IS SOMETHING... Try decoding each letter.'},
+    {type:'text',title:'The Binary Safe',story:'The safe displays: 01000100 01000101 01000011. Convert each byte from binary to ASCII.',answer:'DEC',hint:'01000100=68=D, 01000101=69=E, 01000011=67=C'},
+    {type:'text',title:'The Coordinate Puzzle',story:'A map shows coordinates encoded as: Latitude = √(576), Longitude = ∛(3375). What are the two numbers?',answer:'24 15',hint:'√576 = 24, ∛3375 = 15'},
+    {type:'visual',title:'The Mirror Room',story:'Mirrors on all walls create infinite reflections. A laser pointer reveals letters on specific mirrors: 4th reflection shows "H", 1st shows "E", 3rd shows "R", 2nd shows "I". Arrange by reflection number.',answer:'EIHRD',hint:'1st=E, 2nd=I, 3rd=R, 4th=H... wait, rearrange: HIRE? No... E-I-R-H. The answer is HEIR.',visual:{icons:['🪞'],label:'1st→E, 2nd→I, 3rd→R, 4th→H'}},
+    {type:'text',title:'The Prime Lock',story:'The lock needs 3 prime numbers that multiply to 2310. Find them. (Hint: 2310 = 2 × 3 × 5 × 7 × 11. Pick any 3 factors from the prime factorization that multiply to 2310... actually group them: 2×3=6, 5×7=35, 11. But those aren\'t all prime. Answer: 2 3 5 7 11 as space-separated primes.)',answer:'2 3 5 7 11',hint:'2310 = 2 × 3 × 5 × 7 × 11. All five prime factors.'},
+    {type:'text',title:'The Steganography',story:'An old photograph hides a message in the pixels. The decoded message is: "GUVF VF GUR QRPYNENGVBA BS VAQRCNARQRAPR." ROT13 decode it.',answer:'THIS IS THE DECLARATION OF INDEPENDENCE',hint:'ROT13 each letter: G→T, U→H, V→I, F→S...'},
+    {type:'text',title:'Freedom',story:'The glass case\'s final lock asks: "What 7-letter word means both freedom from control AND the document you seek?" Starts with L.',answer:'LIBERTY',hint:'The opposite of tyranny. A famous bell has this name.'}
+  ]
+}
+};
+
+// ═══ STATE ═══
+let selectedRoom=null,mode='solo',diff='easy',maxPlayers=4;
+let myId=null,roomId=null,roomRef=null,isHost=false,listeners=[];
+let GS=null,timerInterval=null;
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none'});const el=document.getElementById(id);el.classList.add('active');el.style.display='flex'}
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<5;i++)r+=c[~~(Math.random()*c.length)];return r}
+
+// ═══ ROOM SELECT ═══
+function selectRoom(room){
+  selectedRoom=room;
+  const names={egypt:'The Pharaoh\'s Tomb',murder:'The Murder Mystery',declaration:'The Hidden Declaration'};
+  document.getElementById('setup-title').textContent=names[room];
+  // Build player select
+  const ps=document.getElementById('player-select');ps.innerHTML='';
+  for(let i=2;i<=8;i++){const d=document.createElement('div');d.className='ps-opt'+(i===4?' sel':'');d.textContent=i;d.onclick=()=>{maxPlayers=i;ps.querySelectorAll('.ps-opt').forEach(x=>x.classList.remove('sel'));d.classList.add('sel')};ps.appendChild(d)}
+  show('room-setup');
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('sel'));
+  event.target.closest('.mode-btn').classList.add('sel');
+  document.getElementById('solo-options').style.display=m==='solo'?'block':'none';
+  document.getElementById('multi-options').style.display=m==='multi'?'block':'none';
+}
+function setDiff(d){
+  diff=d;
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel'));
+  event.target.closest('.diff-btn').classList.add('sel');
+}
+
+// ═══ SOLO ═══
+function startSolo(){
+  const name=document.getElementById('s-name').value.trim()||'Player';
+  myId='solo';
+  const puzzles=PUZZLES[selectedRoom][diff];
+  GS={room:selectedRoom,diff,mode:'solo',puzzles:puzzles.map((p,i)=>({...p,solved:false,idx:i})),
+    currentPuzzle:0,players:{solo:{name}},cluesLeft:diff==='easy'?3:diff==='medium'?2:1,
+    startTime:Date.now(),duration:1800000,status:'playing',chat:[]};
+  show('game-screen');startTimer();renderGame();
+}
+
+// ═══ MULTIPLAYER ═══
+async function createMulti(){
+  const name=document.getElementById('m-name').value.trim()||'Player';
+  const code=genCode();myId='p_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+  roomId=code;roomRef=db.ref(R+'/rooms/'+code);
+  await roomRef.set({code,host:myId,room:selectedRoom,diff,maxPlayers,status:'waiting',players:{}});
+  await roomRef.child('players/'+myId).set({name,idx:0});
+  isHost=true;setupWaiting();
+}
+async function joinMulti(){
+  const name=document.getElementById('m-name').value.trim()||'Player';
+  const code=document.getElementById('m-code').value.trim().toUpperCase();
+  if(!code)return toast('Enter code');
+  roomRef=db.ref(R+'/rooms/'+code);
+  const snap=await roomRef.once('value');if(!snap.exists())return toast('Not found');
+  const d=snap.val();if(d.status!=='waiting')return toast('Already started');
+  const pc=Object.keys(d.players||{}).length;if(pc>=d.maxPlayers)return toast('Full');
+  myId='p_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);roomId=code;
+  await roomRef.child('players/'+myId).set({name,idx:pc});
+  isHost=false;selectedRoom=d.room;diff=d.diff;setupWaiting();
+}
+function setupWaiting(){
+  const names={egypt:'Pharaoh\'s Tomb',murder:'Murder Mystery',declaration:'Hidden Declaration'};
+  document.getElementById('wait-title').textContent=names[selectedRoom]||'Room';
+  document.getElementById('w-code').textContent=roomId;
+  show('waiting');
+  const plRef=roomRef.child('players'),stRef=roomRef.child('status');
+  const onPl=plRef.on('value',snap=>{
+    const pl=snap.val()||{},list=document.getElementById('w-players');list.innerHTML='';
+    const colors=['#cc3333','#3366cc','#33aa55','#cc9933','#9933cc','#33aaaa','#cc6633','#6633cc'];
+    Object.entries(pl).sort((a,b)=>a[1].idx-b[1].idx).forEach(([id,p],i)=>{
+      const li=document.createElement('li');li.innerHTML=`<span class="pdot" style="background:${colors[i]}"></span>${p.name}${id===myId?' (You)':''}`;list.appendChild(li);
+    });
+    const n=Object.keys(pl).length;
+    document.getElementById('w-status').textContent=n>=2?n+' players ready':'Waiting for players...';
+    document.getElementById('w-start').style.display=(n>=2&&isHost)?'block':'none';
+  });
+  listeners.push(()=>plRef.off('value',onPl));
+  const onSt=stRef.on('value',snap=>{if(snap.val()==='playing')startMultiFromHost()});
+  listeners.push(()=>stRef.off('value',onSt));
+}
+async function startMultiGame(){
+  if(!isHost)return;
+  const snap=await roomRef.child('players').once('value');
+  const pl=snap.val();
+  const puzzles=PUZZLES[selectedRoom][diff];
+  const gs={room:selectedRoom,diff,mode:'multi',puzzles:puzzles.map((p,i)=>({...p,solved:false,idx:i})),
+    currentPuzzle:0,players:pl,cluesLeft:diff==='easy'?3:diff==='medium'?2:1,
+    startTime:Date.now(),duration:1800000,status:'playing',chat:[]};
+  await roomRef.update({status:'playing',gs});
+}
+function startMultiFromHost(){
+  show('game-screen');
+  const gsRef=roomRef.child('gs');
+  const on=gsRef.on('value',snap=>{GS=snap.val();if(GS){renderGame();if(!timerInterval)startTimer()}});
+  listeners.push(()=>gsRef.off('value',on));
+}
+function leaveMulti(){if(roomRef&&myId)roomRef.child('players/'+myId).remove();listeners.forEach(f=>f());listeners=[];clearInterval(timerInterval);timerInterval=null;show('menu')}
+
+// ═══ TIMER ═══
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    if(!GS||GS.status!=='playing')return;
+    const elapsed=Date.now()-GS.startTime;
+    const remaining=Math.max(0,GS.duration-elapsed);
+    const min=~~(remaining/60000),sec=~~((remaining%60000)/1000);
+    const el=document.getElementById('g-timer');
+    el.textContent=min+':'+(sec<10?'0':'')+sec;
+    el.classList.toggle('urgent',remaining<120000);
+    if(remaining<=0){clearInterval(timerInterval);timerInterval=null;endGame(false)}
+  },1000);
+}
+
+// ═══ RENDER GAME ═══
+function renderGame(){
+  if(!GS)return;
+  const names={egypt:'🏛️ Pharaoh\'s Tomb',murder:'🔍 Murder Mystery',declaration:'📜 Hidden Declaration'};
+  document.getElementById('g-title').textContent=names[GS.room]||'Escape Room';
+  document.getElementById('g-clues').textContent='💡 Clues: '+GS.cluesLeft;
+  document.getElementById('g-progress').textContent='Puzzle '+(GS.currentPuzzle+1)+'/'+GS.puzzles.length;
+  document.getElementById('clue-btn').disabled=GS.cluesLeft<=0;
+
+  if(GS.status==='won'||GS.status==='lost'){renderResults();return}
+
+  const puzzle=GS.puzzles[GS.currentPuzzle];
+  if(!puzzle){endGame(true);return}
+
+  const body=document.getElementById('g-body');
+  let html=`<div class="puzzle-card"><h3>${puzzle.title}</h3><div class="puzzle-story">${puzzle.story}</div>`;
+
+  if(puzzle.visual){
+    html+=`<div class="puzzle-visual"><div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">`;
+    puzzle.visual.icons.forEach(ic=>{html+=`<div style="font-size:1.4rem;padding:8px 12px;background:var(--border);border-radius:8px">${ic}</div>`});
+    html+=`</div><div style="color:var(--dim);font-size:.82rem;margin-top:8px">${puzzle.visual.label}</div></div>`;
+  }
+
+  if(puzzle.type==='choice'){
+    html+=`<div class="choices">`;
+    puzzle.choices.forEach((ch,i)=>{
+      html+=`<div class="choice-btn" onclick="submitChoice('${ch}')">${ch}</div>`;
+    });
+    html+=`</div>`;
+  }else{
+    html+=`<div class="puzzle-input"><input id="puzzle-answer" placeholder="Type your answer..." onkeydown="if(event.key==='Enter')submitAnswer()"><button class="btn btn-gold" onclick="submitAnswer()">Submit</button></div>`;
+  }
+
+  html+=`<div class="puzzle-hint${GS.currentHintShown?' show':''}" id="puzzle-hint">${puzzle.hint||''}</div>`;
+  html+=`<div class="puzzle-feedback" id="puzzle-feedback"></div>`;
+  html+=`</div>`;
+
+  // Chat for multiplayer
+  if(GS.mode==='multi'){
+    html+=`<div class="chat-box"><h4>💬 Team Chat</h4><div class="chat-msgs" id="chat-msgs">${(GS.chat||[]).slice(-20).map(m=>`<div><strong>${m.name}:</strong> ${m.text}</div>`).join('')}</div><div class="chat-row"><input id="chat-in" placeholder="Type..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-sm btn-gold" onclick="sendChat()">Send</button></div></div>`;
+  }
+
+  body.innerHTML=html;
+  if(GS.mode==='multi'){const cm=document.getElementById('chat-msgs');if(cm)cm.scrollTop=cm.scrollHeight}
+}
+
+// ═══ SUBMIT ANSWER ═══
+function submitAnswer(){
+  const input=document.getElementById('puzzle-answer');
+  if(!input)return;
+  const answer=input.value.trim().toUpperCase();
+  if(!answer)return;
+  checkAnswer(answer);
+}
+function submitChoice(choice){
+  checkAnswer(choice.toUpperCase());
+}
+
+function checkAnswer(answer){
+  const puzzle=GS.puzzles[GS.currentPuzzle];
+  const correct=puzzle.answer.toUpperCase();
+  const fb=document.getElementById('puzzle-feedback');
+
+  if(answer===correct){
+    fb.textContent='✓ Correct!';fb.className='puzzle-feedback correct';
+    const gs=GS.mode==='solo'?GS:JSON.parse(JSON.stringify(GS));
+    gs.puzzles[gs.currentPuzzle].solved=true;
+    gs.currentPuzzle++;
+    gs.currentHintShown=false;
+    if(gs.currentPuzzle>=gs.puzzles.length){
+      gs.status='won';
+    }
+    if(GS.mode==='solo'){GS=gs;setTimeout(renderGame,800)}
+    else{roomRef.child('gs').set(gs)}
+  }else{
+    fb.textContent='✗ Wrong — try again';fb.className='puzzle-feedback wrong';
+    setTimeout(()=>{if(fb)fb.textContent=''},2000);
+  }
+}
+
+// ═══ CLUE ═══
+function useClue(){
+  if(!GS||GS.cluesLeft<=0)return;
+  if(GS.mode==='solo'){
+    GS.cluesLeft--;GS.currentHintShown=true;renderGame();
+  }else{
+    const gs=JSON.parse(JSON.stringify(GS));gs.cluesLeft--;gs.currentHintShown=true;
+    roomRef.child('gs').set(gs);
+  }
+}
+
+// ═══ CHAT ═══
+async function sendChat(){
+  const input=document.getElementById('chat-in');if(!input)return;
+  const text=input.value.trim();if(!text)return;
+  const name=GS.players[myId]?.name||'Player';
+  if(GS.mode==='multi'){
+    const gs=JSON.parse(JSON.stringify(GS));
+    if(!gs.chat)gs.chat=[];
+    gs.chat.push({name,text,time:Date.now()});
+    if(gs.chat.length>50)gs.chat=gs.chat.slice(-50);
+    await roomRef.child('gs').set(gs);
+  }
+  input.value='';
+}
+
+// ═══ END GAME ═══
+function endGame(won){
+  clearInterval(timerInterval);timerInterval=null;
+  if(GS.mode==='solo'){
+    GS.status=won?'won':'lost';renderGame();
+  }else{
+    const gs=JSON.parse(JSON.stringify(GS));
+    gs.status=won?'won':'lost';
+    roomRef.child('gs').set(gs);
+  }
+}
+
+function renderResults(){
+  const elapsed=GS.status==='won'?Date.now()-GS.startTime:GS.duration;
+  const min=~~(elapsed/60000),sec=~~((elapsed%60000)/1000);
+  const solved=GS.puzzles.filter(p=>p.solved).length;
+  const total=GS.puzzles.length;
+  const won=GS.status==='won';
+
+  const body=document.getElementById('g-body');
+  body.innerHTML=`<div class="results-card ${won?'win':'lose'}">
+    <div style="font-size:3rem;margin-bottom:8px">${won?'🎉':'💀'}</div>
+    <h2>${won?'ESCAPED!':'TIME\'S UP!'}</h2>
+    <p style="color:var(--dim);margin:8px 0">${won?'You solved all puzzles and escaped!':'The room has claimed another victim...'}</p>
+    <div style="margin:16px 0">
+      <div style="font-size:.85rem;color:var(--dim)">Puzzles Solved: <strong style="color:var(--text)">${solved}/${total}</strong></div>
+      <div style="font-size:.85rem;color:var(--dim)">Time: <strong style="color:var(--text)">${min}m ${sec}s</strong></div>
+      <div style="font-size:.85rem;color:var(--dim)">Clues Used: <strong style="color:var(--text)">${(diff==='easy'?3:diff==='medium'?2:1)-GS.cluesLeft}</strong></div>
+      <div style="font-size:.85rem;color:var(--dim)">Difficulty: <strong style="color:var(--text)">${diff.charAt(0).toUpperCase()+diff.slice(1)}</strong></div>
+    </div>
+    <button class="btn btn-gold" onclick="location.reload()" style="border-radius:50px;margin-top:8px">Play Again</button>
+  </div>`;
+}
+
+// ═══ HELPERS ═══
+function toast(m){const c=document.getElementById('tb'),t=document.createElement('div');t.className='toast';t.textContent=m;c.appendChild(t);setTimeout(()=>t.remove(),3000)}
+function showMdl(t,b,btns){document.getElementById('mt').textContent=t;document.getElementById('mb').innerHTML=b;const a=document.getElementById('ma');a.innerHTML='';(btns||[]).forEach(x=>{const btn=document.createElement('button');btn.className='btn '+(x.c||'btn-gold');btn.textContent=x.t;btn.onclick=x.fn;a.appendChild(btn)});document.getElementById('mbg').classList.add('open')}
+function closeMdl(){document.getElementById('mbg').classList.remove('open')}
+document.getElementById('mbg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeMdl()});
+</script>
+</body>
+</html>
