@@ -97,7 +97,7 @@ const P={egypt:{easy:[
 {t:'t',n:'Pillar Heights',s:'Five stone pillars have heights: 12, 7, 15, 3, 8. Sort them from shortest to tallest. What is the MIDDLE (3rd) value?',a:'8',h:'Sorted: 3, 7, 8, 12, 15. The middle one is?'},
 {t:'t',n:'The Poison Cups',s:'8 identical cups. One is slightly heavier (poisoned). You have a balance scale. What is the MINIMUM number of weighings to GUARANTEE finding the heavy cup?',a:'2',h:'Split into groups of 3, 3, and 2. Weigh 3 vs 3. You can narrow it down in 2 total weighings.'},
 {t:'t',n:'Average Trap',s:'Five numbers: 10, 20, 30, 40, and ___. The average of all five must equal 25. What is the missing number?',a:'25',h:'Average of 25 × 5 numbers = 125 total. 10+20+30+40 = 100. Missing = 125-100 = ?'},
-{t:'t',n:'The Grid Walk',s:'A 4×4 grid. You start at the top-left corner and must reach the bottom-right corner. You can ONLY move right or down. How many different paths exist? (Look at the background — count the diamond shapes for a hint!)',a:'20',h:'You need 3 rights and 3 downs (6 moves). Choose 3 from 6 = 20.'},
+{t:'t',n:'The Grid Walk',s:'A hallway has 4 locked doors. Behind each door is a room with 3 exits. But only 1 exit per room leads forward. If you guess randomly at each door, how many TOTAL possible paths are there through all 4 doors? (Multiply the exits: 3 × 3 × 3 × 3) (Look at the background — count the diamond shapes for a hint!)',a:'81',h:'3 × 3 × 3 × 3 = 81 possible paths.'},
 {t:'t',n:'Age Puzzle',s:'A father is exactly 3 times his sons age right now. In 12 years, he will be exactly 2 times his sons age. How old is the son RIGHT NOW?',a:'12',h:'Son=x, Dad=3x. In 12 years: 3x+12 = 2(x+12). Solve for x.'},
 {t:'t',n:'The Final Gate',s:'The exit code: Take the number of sides on a triangle, multiply by the number of sides on a pentagon, then subtract the number of sides on a square.',a:'11',h:'3 × 5 = 15. 15 - 4 = ?'}
 ]},murder:{easy:[
@@ -123,7 +123,7 @@ const P={egypt:{easy:[
 {t:'t',n:'Logic Alibis',s:'Three suspects: one ALWAYS tells truth, one ALWAYS lies, one answers randomly. Suspect 1 says "I didnt do it." Suspect 2 says "Suspect 1 is lying." If Suspect 1 is the truth-teller, did Suspect 1 commit the crime? Answer YES or NO.',a:'NO',h:'The truth-teller always tells truth. He says he didnt do it. So he didnt.'},
 {t:'t',n:'The Locked Room',s:'The room was locked from INSIDE. The key is in the victims pocket. The window is open exactly 3 inches wide. A standard key is about 2 inches long. Could someone have tossed the key through the window gap? Answer YES or NO.',a:'YES',h:'2 inches is less than 3 inches.'},
 {t:'t',n:'Estimated Time of Death',s:'Body temperature drops about 1.5°F per hour after death. Normal body temp is 98.6°F. The body is currently 89.6°F. How many hours ago did death occur?',a:'6',h:'98.6 - 89.6 = 9 degrees lost. 9 ÷ 1.5 = ?'},
-{t:'t',n:'The DNA Odds',s:'A DNA test has a match probability of 1 in 1,000,000. The city has 500,000 residents. How many expected random matches? (Answer as a decimal)',a:'0.5',h:'500,000 ÷ 1,000,000 = ?'},
+{t:'t',n:'The Evidence Locker',s:'The evidence locker has a number code. There are 4 shelves. Each shelf holds 8 evidence bags. 5 bags have been removed for testing. How many bags are still in the locker?',a:'27',h:'Total bags: 4 × 8 = 32. Remove 5: 32 - 5 = ?'},
 {t:'c',n:'The Poison Glass',s:'4 wine glasses at the table. You can only test 2. You tested Glass A and Glass B — both are clean. The poison must be in one of the remaining glasses. What is the probability it is in Glass C?',a:'0',c:['50%','25%','75%','100%'],h:'Two glasses left untested (C and D). Equal chance in either one = 50%.'},
 {t:'t',n:'Door Locks',s:'3 locked doors, each needing a DIFFERENT key. You have 3 keys but dont know which goes where. In the WORST case, how many total attempts to open ALL three doors?',a:'6',h:'Door 1: try up to 3 keys. Door 2: try up to 2 keys. Door 3: the last key must work. 3+2+1=6.'},
 {t:'t',n:'Money Trail',s:'The victim had $500 total. Police found: $120 in his wallet, $215 in the safe, $80 in the desk drawer. How much money is missing/unaccounted for?',a:'85',h:'120 + 215 + 80 = 415. 500 - 415 = ?'},
@@ -151,14 +151,14 @@ const P={egypt:{easy:[
 {t:'t',n:'The Grid Cipher',s:'A 3×3 letter grid: Row 1 = A,B,C. Row 2 = D,E,F. Row 3 = G,H,I. Decode coordinates (1,2)(3,1)(2,3)(1,1) by reading (row,column) to get letters.',a:'BGFA',h:'(1,2)=B, (3,1)=G, (2,3)=F, (1,1)=A → BGFA'},
 {t:'t',n:'The Prime Door',s:'The vault door needs a number. A note says: "Enter the 5th prime number." Prime numbers: 2, 3, 5, 7, ...',a:'11',h:'Primes: 2, 3, 5, 7, 11. The 5th one is?'}
 ],hard:[
-{t:'t',n:'Binary Lock',s:'A digital screen flashes: 01001000 01001001. In binary-to-letter code (ASCII): 01001000 = 72 = H, 01001001 = 73 = I. What 2-letter word does it spell?',a:'HI',h:'H and I spell?'},
-{t:'t',n:'The Square Roots',s:'Two number displays. First shows √144. Second shows √81. Put the two answers together as one number (no space).',a:'129',h:'√144 = 12. √81 = 9. Together: 129.'},
-{t:'t',n:'The Fraction Key',s:'A mechanical lock needs a number. Solve: (3/4) × (2/3) × 100 = ?',a:'50',h:'3/4 × 2/3 = 6/12 = 1/2. Then 1/2 × 100 = ?'},
+{t:'t',n:'The Number Lock',s:'A screen shows a pattern: A=2, B=4, C=6, D=8. Each letter equals its position in the alphabet × 2. What does the letter J equal? (J is the 10th letter)',a:'20',h:'J is the 10th letter. 10 × 2 = ?'},
+{t:'t',n:'The Double Code',s:'Two safes. Safe 1 code: 15 × 8. Safe 2 code: the answer from Safe 1 minus 50. What is Safe 2s code?',a:'70',h:'15 × 8 = 120. Then 120 - 50 = ?'},
+{t:'t',n:'The Fraction Key',s:'A lock shows: "Half of 60, plus a quarter of 40." What number opens it?',a:'40',h:'Half of 60 = 30. Quarter of 40 = 10. 30 + 10 = ?'},
 {t:'t',n:'Letter Values',s:'Using A=1, B=2, C=3... Z=26, calculate the total value of the word CAT. (Add the values of C + A + T)',a:'24',h:'C=3, A=1, T=20. Total = 3+1+20 = ?'},
 {t:'t',n:'The Perimeter',s:'The room you are trapped in is 8 meters long and 5 meters wide. What is the perimeter (total distance around the room) in meters?',a:'26',h:'Perimeter = 2 × (length + width) = 2 × (8+5) = ?'},
 {t:'c',n:'The Truth Door',s:'Two guards stand before two doors. One guard ALWAYS lies, one ALWAYS tells truth. You dont know who is who. You ask one guard: "Would the OTHER guard say this door leads to freedom?" The guard says YES. Does the door lead to freedom?',a:'1',c:['No — pick the other door','Yes — go through it'],h:'This double-question trick always gives the OPPOSITE of truth. If he says YES, the door is NOT safe.'},
 {t:'t',n:'Speed of Light',s:'Light travels 300,000 kilometers per second. How far does it travel in exactly 2 seconds? (Answer in km, no commas)',a:'600000',h:'300000 × 2 = ?'},
-{t:'t',n:'The Anagram',s:'Rearrange the letters "COTED NUMI" to form a word that means "a written paper with important information." (Look at the circular patterns in the background — the answer goes around and around.)',a:'DOCUMENT',h:'Rearrange to form a common word starting with DOC...'},
+{t:'t',n:'The Anagram',s:'Rearrange ALL the letters in "CANE DINE PEND" to form a single 12-letter word that means "not relying on others; free and self-sufficient." (Look at the circular patterns in the background — the answer goes around and around.)',a:'INDEPENDENCE',h:'Think about what the Declaration is about — being free from control. Starts with I-N-D...'},
 {t:'t',n:'Percentage Off',s:'A locked cabinet has a price tag puzzle. The item costs $80 and is 25% off. What do you actually pay?',a:'60',h:'25% of 80 = 20. So 80 - 20 = ?'},
 {t:'t',n:'The Volume',s:'A box is found with dimensions: 3cm long × 4cm wide × 5cm tall. What is its volume in cubic centimeters?',a:'60',h:'3 × 4 × 5 = ?'},
 {t:'t',n:'Missing Angle',s:'A triangular tile on the floor has two angles marked: 60° and 80°. All three angles in any triangle add up to 180°. What is the third angle?',a:'40',h:'180 - 60 - 80 = ?'},
@@ -235,3 +235,4 @@ function toast(m){const c=document.getElementById('tbx'),t=document.createElemen
 </script>
 </body>
 </html>
+
